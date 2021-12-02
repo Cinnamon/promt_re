@@ -69,7 +69,7 @@ if __name__ == '__main__':
     model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
     tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
     print("training")
-    train_file = 'conll2003\\test.txt'
+    train_file = 'conll2003/test.txt'
     data_set = T5ConllDataset(train_file)
     train_dataloader = DataLoader(data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
     test_dataloader = DataLoader(data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
