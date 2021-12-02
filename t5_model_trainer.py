@@ -36,7 +36,8 @@ def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, toke
         loop = tqdm(enumerate(data_loader))
         for i, batch in loop:
             inputs, labels = batch[0].to(device), batch[1].to(device)
-            loss = run_model(model, inputs, labels)
+            output = run_model(model, inputs, labels)
+            loss = output[0]
             loss.backward()
             optim.step()
             lr_scheduler.step()
