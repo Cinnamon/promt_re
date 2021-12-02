@@ -1,6 +1,7 @@
 import json
 
 from transformers.models.mt5 import MT5ForConditionalGeneration, MT5Tokenizer
+from transformers.models.t5 import T5ForConditionalGeneration, T5Tokenizer
 from transformers import AdamW
 from transformers.optimization import get_linear_schedule_with_warmup
 from conll_t5_dataset import T5ConllDataset, collate_fn
@@ -64,9 +65,9 @@ def evaluate(model, data_loader, output_file, tokenizer):
 
 if __name__ == '__main__':
     print("load model ...")
-    pretrained_model = 'google/mt5-base'
-    model = MT5ForConditionalGeneration.from_pretrained(pretrained_model)
-    tokenizer = MT5Tokenizer.from_pretrained(pretrained_model)
+    pretrained_model = 't5-base'
+    model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
+    tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
     print("training")
     train_file = 'conll2003\\test.txt'
     data_set = T5ConllDataset(train_file)
