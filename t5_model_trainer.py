@@ -11,6 +11,8 @@ from tqdm import tqdm
 
 from functools import partial
 
+EVAL_EVERY = 5
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
@@ -44,26 +46,25 @@ def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, toke
             lr_scheduler.step()
             loop.set_description(f'Epoch {epoch}')
             loop.set_postfix(loss=round(float(loss), 5))
-        evaluate(model, test_dataloader, pred_file, tokenizer)
+        if epoch % EVAL_EVERY == 0:
+            evaluate(model, test_dataloader, pred_file, tokenizer)
 
 
 def evaluate(model, data_loader, output_file, tokenizer):
     model.eval()
-    ca = []
-    preds = []
+    output = []
     # save to file
     print("evaluate ...")
     for batch in tqdm(data_loader):
-        labels = batch[1]['input_ids']
+        labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
         greedy_output = model.generate(inputs, max_length=100)
-        pred = greedy_output.detach().cpu()
-        ca.append(labels)
-        preds.append(pred)
-    ca = torch.cat(ca, dim=0)
-    preds = torch.cat(preds, dim=0)
-    torch.save(ca, 'ca.pt')
-    torch.save(preds, 'preds.pt')
+        preds = greedy_output.cpu().detach().tolist()
+        for i in range(len(labels)):
+            gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
+            pred = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(preds[i]))
+            output.append((gt, pred))
+    json.dump(output, open(output_file, 'w', encoding='utf-8'))
 
 
 if __name__ == '__main__':
