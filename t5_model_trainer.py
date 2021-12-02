@@ -51,10 +51,11 @@ def evaluate(model, data_loader, output_file, tokenizer):
     model.eval()
     output = []
     # save to file
-    for batch in data_loader:
+    print("evaluate ...")
+    for batch in tqdm(data_loader):
         labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
-        greedy_output = model.generate(inputs, max_length=50)
+        greedy_output = model.generate(inputs, max_length=100)
         preds = greedy_output.cpu().detach().tolist()
         for i in range(len(labels)):
             gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
@@ -71,8 +72,8 @@ if __name__ == '__main__':
     print("training")
     train_file = 'conll2003/test.txt'
     data_set = T5ConllDataset(train_file)
-    train_dataloader = DataLoader(data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
-    test_dataloader = DataLoader(data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
+    train_dataloader = DataLoader(data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
+    test_dataloader = DataLoader(data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
     pred_file = 'pred.json'
     train_model(model, train_dataloader, test_dataloader, 10, pred_file, tokenizer)
     # evaluate(model, data_loader, storages, tokenizer)
