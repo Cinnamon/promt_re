@@ -75,5 +75,5 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
     test_dataloader = DataLoader(data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
     pred_file = 'pred.json'
-    train_model(model, train_dataloader, test_dataloader, 10, pred_file, tokenizer)
+    train_model(model, train_dataloader, test_dataloader, 100, pred_file, tokenizer)
     # evaluate(model, data_loader, storages, tokenizer)
