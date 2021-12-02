@@ -49,19 +49,21 @@ def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, toke
 
 def evaluate(model, data_loader, output_file, tokenizer):
     model.eval()
-    output = []
+    ca = []
+    preds = []
     # save to file
     print("evaluate ...")
     for batch in tqdm(data_loader):
-        labels = batch[1]['input_ids'].tolist()
+        labels = batch[1]['input_ids']
         inputs = batch[0]['input_ids'].to(device)
         greedy_output = model.generate(inputs, max_length=100)
-        preds = greedy_output.cpu().detach().tolist()
-        for i in range(len(labels)):
-            gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
-            pred = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(preds[i]))
-            output.append((gt, pred))
-    json.dump(output, open(output_file, 'w', encoding='utf-8'))
+        pred = greedy_output.detach().cpu()
+        ca.append(labels)
+        preds.append(pred)
+    ca = torch.cat(ca, dim=0)
+    preds = torch.cat(preds, dim=0)
+    torch.save(ca, 'ca.pt')
+    torch.save(preds, 'preds.pt')
 
 
 if __name__ == '__main__':
