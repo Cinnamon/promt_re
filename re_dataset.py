@@ -29,8 +29,6 @@ def collate_fn(tokenizer, batches):
     targets = [x[1] for x in batches]
     texts_tokenized = tokenizer(texts, return_tensors='pt',
                                 padding='longest')
-    print(targets)
-    1/0
     targets_tokenized = tokenizer(targets, return_tensors='pt',
                                   padding='longest')
     return texts_tokenized, targets_tokenized
