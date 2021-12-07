@@ -69,9 +69,9 @@ def evaluate(model, data_loader, output_file, tokenizer):
 
 if __name__ == '__main__':
     print("load model ...")
-    pretrained_model = 'google/mt5-small'
-    model = MT5ForConditionalGeneration.from_pretrained(pretrained_model)
-    tokenizer = MT5Tokenizer.from_pretrained(pretrained_model)
+    pretrained_model = 'megagonlabs/t5-base-japanese-web'
+    model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
+    tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
     print("training")
     train_file = 'Ueno/train.json'
     test_file = 'Ueno/test.json'
