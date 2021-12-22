@@ -4,7 +4,8 @@ from transformers.models.mt5 import MT5ForConditionalGeneration, MT5Tokenizer
 from transformers.models.t5 import T5ForConditionalGeneration, T5Tokenizer
 from transformers import AdamW
 from transformers.optimization import get_linear_schedule_with_warmup
-from re_dataset import T5REDataset, collate_fn
+# from re_dataset import T5REDataset, collate_fn
+from conll_t5_tanl_dataset import T5ConllDataset, collate_fn
 from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
@@ -58,7 +59,7 @@ def evaluate(model, data_loader, output_file, tokenizer):
     for batch in tqdm(data_loader):
         labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
-        greedy_output = model.generate(inputs, max_length=100)
+        greedy_output = model.generate(inputs)
         preds = greedy_output.cpu().detach().tolist()
         for i in range(len(labels)):
             gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
@@ -69,14 +70,14 @@ def evaluate(model, data_loader, output_file, tokenizer):
 
 if __name__ == '__main__':
     print("load model ...")
-    pretrained_model = 'megagonlabs/t5-base-japanese-web'
+    pretrained_model =  't5-base' #'megagonlabs/t5-base-japanese-web'
     model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
     tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
     print("training")
-    train_file = 'Ueno/train.json'
-    test_file = 'Ueno/test.json'
-    train_data_set = T5REDataset(train_file)
-    test_data_set = T5REDataset(test_file)
+    train_file = 'conll2003/train.txt'
+    test_file = 'conll2003/test.txt'
+    train_data_set = T5ConllDataset(train_file)
+    test_data_set = T5ConllDataset(test_file)
     train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
     test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
     pred_file = 'pred.json'
