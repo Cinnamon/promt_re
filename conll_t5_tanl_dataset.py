@@ -43,6 +43,8 @@ class T5ConllDataset(Dataset):
                     if tag.startswith('B'):
                         label = tag[2:]
                         entity = word
+                    else:
+                        target += ' ' + word
                 else:
                     assert label != ''
                     entity += ' ' + word
