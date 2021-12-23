@@ -56,7 +56,7 @@ def prepare_data(data, last_ans=True):
     return ret
 
 
-class T5ConllDataset(Dataset):
+class T5ECPEDataset(Dataset):
     def __init__(self, data_path, max_len=128):
         self.label_dict = {'LOC': 'location',
                            'PER': 'person',
