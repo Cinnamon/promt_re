@@ -70,16 +70,17 @@ def evaluate(model, data_loader, output_file, tokenizer):
 
 if __name__ == '__main__':
     print("load model ...")
-    pretrained_model =  't5-base' #'megagonlabs/t5-base-japanese-web'
+    # pretrained_model =  't5-base' #'megagonlabs/t5-base-japanese-web'
+    pretrained_model = 'uer/t5-base-chinese-cluecorpussmall'  # 'megagonlabs/t5-base-japanese-web'
     model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
     tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
     print("training")
-    train_file = 'conll2003/train.txt'
-    test_file = 'conll2003/test.txt'
+    train_file = 'data_combine/fold1_train.txt'
+    test_file = 'data_combine/fold1_test.txt'
     train_data_set = T5ConllDataset(train_file)
     test_data_set = T5ConllDataset(test_file)
-    train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
-    test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
-    pred_file = 'pred.json'
+    train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
+    test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
+    pred_file = 'pred_fold1.json'
     train_model(model, train_dataloader, test_dataloader, 20, pred_file, tokenizer)
     # evaluate(model, data_loader, storages, tokenizer)
