@@ -6,7 +6,8 @@ from transformers import AdamW
 from transformers.optimization import get_linear_schedule_with_warmup
 # from re_dataset import T5REDataset, collate_fn
 from ecpe_dataset import T5ECPEDataset, collate_fn
-from conll_t5_tanl_dataset import T5ConllDataset, collate_fn
+# from conll_t5_tanl_dataset import T5ConllDataset, collate_fn
+from conll_promt_retrieval_dataset import T5ConllDataset, collate_fn
 from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
@@ -87,6 +88,6 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
     test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=8)
     # pred_file = 'pred_fold1.json'
-    pred_file = 'pred_conll.json'
+    pred_file = 'pred_conll_retrieval.json'
     train_model(model, train_dataloader, test_dataloader, 20, pred_file, tokenizer)
     # evaluate(model, data_loader, storages, tokenizer)

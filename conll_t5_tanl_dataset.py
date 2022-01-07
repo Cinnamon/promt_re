@@ -70,3 +70,8 @@ def collate_fn(tokenizer, batches):
     targets_tokenized = tokenizer(targets, return_tensors='pt',
                                   padding='longest')
     return texts_tokenized, targets_tokenized
+
+
+if __name__ == '__main__':
+    pass
+
