@@ -24,7 +24,7 @@ class T5ConllDataset(Dataset):
             if len(line.strip()) == 0:
                 if len(text) > 0:
                     if len(entity) > 0:
-                        target += ' ' + entity + ' is ' + self.label_dict[label] + ';'
+                        target += f" {entity} is {self.label_dict[label]} ."
                     texts.append(text.strip())
                     targets.append(target.strip())
                 text = ''
@@ -36,7 +36,7 @@ class T5ConllDataset(Dataset):
                 text += ' ' + word
                 if tag.startswith('B') or tag == 'O':
                     if len(entity) > 0:
-                        target += ' ' + entity + ' is ' + self.label_dict[label] + ';'
+                        target += f" {entity} is {self.label_dict[label]} ."
                         entity = ''
                         label = ''
                     if tag.startswith('B'):
@@ -47,7 +47,7 @@ class T5ConllDataset(Dataset):
                     entity += ' ' + word
         if len(text) > 0:
             if len(entity) > 0:
-                target += ' ' + entity + ' is ' + self.label_dict[label] + ';'
+                target += f" {entity} is {self.label_dict[label]} ."
             texts.append(text.strip())
             targets.append(target.strip())
         return texts, targets
