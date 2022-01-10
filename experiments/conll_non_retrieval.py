@@ -1,11 +1,9 @@
 import json
 
-from transformers.models.mt5 import MT5ForConditionalGeneration, MT5Tokenizer
 from transformers.models.t5 import T5ForConditionalGeneration, T5Tokenizer
 from transformers import AdamW
 from transformers.optimization import get_linear_schedule_with_warmup
 # from re_dataset import T5REDataset, collate_fn
-from ecpe_dataset import T5ECPEDataset, collate_fn
 # from conll_t5_tanl_dataset import T5ConllDataset, collate_fn
 from datasets.conll_t5_dataset import T5ConllDataset, collate_fn
 from torch.utils.data import DataLoader
