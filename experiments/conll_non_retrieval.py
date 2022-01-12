@@ -59,7 +59,7 @@ def evaluate(model, data_loader, output_file, tokenizer):
     for batch in tqdm(data_loader):
         labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
-        greedy_output = model.generate(inputs)
+        greedy_output = model.generate(inputs, inputs, num_beams=5, early_stopping=True)
         preds = greedy_output.cpu().detach().tolist()
         for i in range(len(labels)):
             gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
@@ -87,5 +87,5 @@ if __name__ == '__main__':
     test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=4)
     # pred_file = 'pred_fold1.json'
     pred_file = 'pred_conll_non_retrieval.json'
-    train_model(model, train_dataloader, test_dataloader, 20, pred_file, tokenizer)
+    train_model(model, train_dataloader, test_dataloader, 5, pred_file, tokenizer)
     # evaluate(model, data_loader, storages, tokenizer)

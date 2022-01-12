@@ -73,5 +73,8 @@ def collate_fn(tokenizer, batches):
 
 
 if __name__ == '__main__':
+    dataset = T5ConllDataset('D:\\promt_re\\conll2003\\test.txt')
+    for x in dataset:
+        print(x)
     pass
 

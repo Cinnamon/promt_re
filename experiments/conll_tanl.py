@@ -8,6 +8,9 @@ from datasets.conll_t5_tanl_dataset import T5ConllDataset, collate_fn
 from torch.utils.data import DataLoader
 import torch
 from tqdm import tqdm
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 from functools import partial
 
@@ -58,7 +61,7 @@ def evaluate(model, data_loader, output_file, tokenizer):
     for batch in tqdm(data_loader):
         labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
-        greedy_output = model.generate(inputs)
+        greedy_output = model.generate(inputs, num_beams=5, early_stopping=True)
         preds = greedy_output.cpu().detach().tolist()
         for i in range(len(labels)):
             gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
@@ -68,8 +71,10 @@ def evaluate(model, data_loader, output_file, tokenizer):
 
 
 if __name__ == '__main__':
+    from datasets import prj_path
+
     print("load model ...")
-    pretrained_model =  't5-base' #'megagonlabs/t5-base-japanese-web'
+    pretrained_model = 't5-base'  # 'megagonlabs/t5-base-japanese-web'
     # pretrained_model = 'google/mt5-small'  # 'megagonlabs/t5-base-japanese-web'
     model = T5ForConditionalGeneration.from_pretrained(pretrained_model)
     tokenizer = T5Tokenizer.from_pretrained(pretrained_model)
@@ -78,12 +83,12 @@ if __name__ == '__main__':
     # test_file = 'data_combine/fold1_test.txt'
     # train_data_set = T5ECPEDataset(train_file)
     # test_data_set = T5ECPEDataset(test_file)
-    train_file = 'conll2003/train.txt'
-    test_file = 'conll2003/test.txt'
+    train_file = prj_path + '/conll2003/test.txt'
+    test_file = prj_path + '/conll2003/test.txt'
     train_data_set = T5ConllDataset(train_file)
     test_data_set = T5ConllDataset(test_file)
-    train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=4)
-    test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=4)
+    train_dataloader = DataLoader(train_data_set, shuffle=True, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
+    test_dataloader = DataLoader(test_data_set, shuffle=False, collate_fn=partial(collate_fn, tokenizer), batch_size=1)
     # pred_file = 'pred_fold1.json'
     pred_file = 'pred_conll_tanl.json'
     train_model(model, train_dataloader, test_dataloader, 20, pred_file, tokenizer)
