@@ -52,6 +52,7 @@ def load_dataset(data_path):
 
 def parse_result(input_file):
     data = json.load(open(input_file, 'r', encoding='utf-8'))
+    gts = []
     preds = []
     for sample in data:
         sample = sample[1]
@@ -60,7 +61,14 @@ def parse_result(input_file):
         samples = [x.strip() for x in samples if len(x.strip()) > 0]
         samples = [(x.split('is')[0].strip(), x.split('is')[-1].strip()) for x in samples]
         preds.append(samples)
-    return preds
+    for sample in data:
+        sample = sample[0]
+        sample = sample.split('</s>')[0]
+        samples = sample.split('.')
+        samples = [x.strip() for x in samples if len(x.strip()) > 0]
+        samples = [(x.split('is')[0].strip(), x.split('is')[-1].strip()) for x in samples]
+        gts.append(samples)
+    return preds, gts
 
 
 def parse_tanl_result(input_file):
@@ -96,19 +104,19 @@ def calculate_f1_conll(preds, gts):
 if __name__ == '__main__':
     file = 'D:\\promt_re\\predictions\\pred_conll_retrieval.json'
     non_retrieval_file = 'D:\\promt_re\\predictions\\pred_conll_non_retrieval.json'
-    tanl_file = 'D:\\promt_re\\predictions\\pred_conll_tanl.json'
+    # tanl_file = 'D:\\promt_re\\predictions\\pred_conll_tanl.json'
     gt_file = 'D:\\promt_re\\conll2003\\test.txt'
-    _, gts = load_dataset(gt_file)
-    preds = parse_result(file)
-    preds_non_retrieval = parse_result(non_retrieval_file)
-    preds_tanl = parse_tanl_result(tanl_file)
-    for i in range(len(gts)):
-        print(gts[i])
-        print(preds_tanl[i])
+    # _, gts = load_dataset(gt_file)
+    preds, gts = parse_result(file)
+    preds_non_retrieval, gts_non_retrieval = parse_result(non_retrieval_file)
+    # preds_tanl = parse_tanl_result(tanl_file)
+    # for i in range(len(gts)):
+    #     print(gts[i])
+    #     print(preds_tanl[i])
 
-    # f1_retrieval = calculate_f1_conll(preds, gts)
-    # f1_non_retrieval = calculate_f1_conll(preds_non_retrieval, gts)
-    f1_tanl = calculate_f1_conll(preds_tanl, gts)
-    # print("retrieval: ", f1_retrieval)
-    # print("non retrieval: ", f1_non_retrieval)
-    print("tanl: ", f1_tanl)
+    f1_retrieval = calculate_f1_conll(preds, gts)
+    f1_non_retrieval = calculate_f1_conll(preds_non_retrieval, gts_non_retrieval)
+    # f1_tanl = calculate_f1_conll(preds_tanl, gts)
+    print("retrieval: ", f1_retrieval)
+    print("non retrieval: ", f1_non_retrieval)
+    # print("tanl: ", f1_tanl)
