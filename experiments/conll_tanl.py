@@ -32,7 +32,7 @@ def run_model(model, inputs, labels, is_train=True):
 def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, tokenizer):
     model.to(device)
     # optim = torch.optim.SGD(model.parameters(), lr=2e-5)
-    optim = AdamW(model.parameters(), lr=2e-5)
+    optim = AdamW(model.parameters(), lr=5e-5)
     num_training_steps = num_epochs * len(data_loader)
     lr_scheduler = get_linear_schedule_with_warmup(
         optim,
@@ -46,6 +46,7 @@ def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, toke
             loss = output[0]
             loss.backward()
             optim.step()
+            model.zero_grad()
             lr_scheduler.step()
             loop.set_description(f'Epoch {epoch}')
             loop.set_postfix(loss=round(float(loss), 5))
@@ -83,7 +84,7 @@ if __name__ == '__main__':
     # test_file = 'data_combine/fold1_test.txt'
     # train_data_set = T5ECPEDataset(train_file)
     # test_data_set = T5ECPEDataset(test_file)
-    train_file = prj_path + '/conll2003/test.txt'
+    train_file = prj_path + '/conll2003/train.txt'
     test_file = prj_path + '/conll2003/test.txt'
     train_data_set = T5ConllDataset(train_file)
     test_data_set = T5ConllDataset(test_file)

@@ -44,6 +44,7 @@ def train_model(model, data_loader, test_dataloader, num_epochs, pred_file, toke
             loss = output[0]
             loss.backward()
             optim.step()
+            model.zero_grad()
             lr_scheduler.step()
             loop.set_description(f'Epoch {epoch}')
             loop.set_postfix(loss=round(float(loss), 5))
