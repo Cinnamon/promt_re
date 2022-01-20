@@ -37,7 +37,7 @@ def parse_tanl_result(data):
     gts = []
     preds = []
     for sample in data:
-        gts.append(parse_tanl_result(sample[0]))
+        gts.append(parse_tanl_text(sample[0]))
         preds.append(parse_tanl_text(sample[1]))
     return preds, gts
 
@@ -56,6 +56,9 @@ def calculate_f1_conll(preds, gts):
     for i in range(len(preds)):
         pred_set = set(preds[i])
         gt_set = set(gts[i])
+        print(pred_set)
+        print(gt_set)
+        print("------")
         common = pred_set.intersection(gt_set)
         tp += len(common)
         fp += len(pred_set - gt_set)
@@ -68,3 +71,7 @@ def calculate_f1_conll(preds, gts):
         f1 = 2 * p * r / (p + r)
     return f1
 
+if __name__ == '__main__':
+    import json
+    data = json.load(open('D:\\promt_re\\predictions\\pred_conll_tanl.json', 'r', encoding='utf-8'))
+    calculate_f1(data, parse_tanl_result)
