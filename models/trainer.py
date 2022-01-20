@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 from functools import partial
 
-EVAL_EVERY = 5
+EVAL_EVERY = 3
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -59,7 +59,7 @@ def evaluate(model, data_loader, output_file, tokenizer, parsing_function):
     for batch in tqdm(data_loader):
         labels = batch[1]['input_ids'].tolist()
         inputs = batch[0]['input_ids'].to(device)
-        greedy_output = model.generate(inputs, inputs, num_beams=5, early_stopping=True)
+        greedy_output = model.generate(inputs, num_beams=5, early_stopping=True)
         preds = greedy_output.cpu().detach().tolist()
         for i in range(len(labels)):
             gt = tokenizer.convert_tokens_to_string(tokenizer.convert_ids_to_tokens(labels[i]))
