@@ -56,9 +56,6 @@ def calculate_f1_conll(preds, gts):
     for i in range(len(preds)):
         pred_set = set(preds[i])
         gt_set = set(gts[i])
-        print(pred_set)
-        print(gt_set)
-        print("------")
         common = pred_set.intersection(gt_set)
         tp += len(common)
         fp += len(pred_set - gt_set)
