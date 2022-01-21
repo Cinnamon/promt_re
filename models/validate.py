@@ -15,8 +15,7 @@ def parse_conll_text(sample):
     return samples
 
 
-def parse_conll_result(input_file):
-    data = json.load(open(input_file, 'r', encoding='utf-8'))
+def parse_conll_result(data):
     gts = []
     preds = []
     for sample in data:
